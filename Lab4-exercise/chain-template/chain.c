@@ -1,6 +1,7 @@
 /*---------------------------------------------------------------------------*/
 #include "contiki.h"
 #include "dev/radio.h"
+#include "sys/node-id.h"
 #include "net/netstack.h"
 #include "net/rime/rime.h"
 #include "random.h"
@@ -16,7 +17,10 @@
 #define MAX_HOPS 20
 #define NBR_TABLE_SIZE 30
 
+#define CHAIN_TIMER_DELAY (3*CLOCK_SECOND)
+
 #define DEBUG_PRINT 0
+#define CONTIKI_TARGET_SKY 0
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
 PROCESS(button_process, "Button Process");
@@ -45,18 +49,39 @@ static bool get_random_neighbor(linkaddr_t* addr);
 static void nbr_table_add(const linkaddr_t* addr);
 /*---------------------------------------------------------------------------*/
 /* Send a message in unicast upon button press */
+static struct ctimer ct;
+static linkaddr_t unicast_chain_initiator = {{0xF7, 0x9C}};
+
 PROCESS_THREAD(button_process, ev, data)
 {
   PROCESS_BEGIN();
-  SENSORS_ACTIVATE(button_sensor);
   unicast_open(&uc_conn, UNICAST_CHANNEL, &uc_callbacks);
+
+  #if CONTIKI_TARGET_SKY
+    // uncomment if button is enabled
+    //SENSORS_ACTIVATE(button_sensor);
+    
+    if(node_id == 1){
+      // if the node is the 1, start the chain
+      ctimer_set(&ct, CHAIN_TIMER_DELAY, send_msg, NULL);
+    }
+  #else
+    if(linkaddr_cmp(&unicast_chain_initiator, &linkaddr_node_addr)){
+      // if the node is the F7:9C, start the chain
+      // obervation: the chain is lost sometimes meaning that
+      // the hopping count doesn't reach value 20
+      ctimer_set(&ct, CHAIN_TIMER_DELAY, send_msg, NULL);
+    }
+  #endif
 
   while(1) {
     PROCESS_WAIT_EVENT();
-    if(ev == sensors_event) {
-      send_msg();
-    }
+    // uncomment if button is enabled
+    // if(ev == sensors_event) {
+    //   send_msg();
+    // }
   }
+
   PROCESS_END();
 }
 
@@ -146,6 +171,8 @@ static void send_msg() {
   }
   else
     printf("No neighbors to send packet to\n");
+
+  ctimer_set(&ct, CHAIN_TIMER_DELAY, send_msg, NULL);
 }
 
 static void
