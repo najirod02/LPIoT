@@ -1,0 +1,22 @@
+[16:20:55 - main] [Cooja.java:1317] [INFO] - > Starting Cooja
+[16:20:55 - main] [Cooja.java:2858] [INFO] - External tools default settings: /external_tools_linux_64.config
+[16:20:55 - main] [Cooja.java:2888] [INFO] - External tools user settings: /home/user/.cooja.user.properties
+[16:20:56 - main] [Cooja.java:4263] [WARN] - Replaced [APPS_DIR]/collect-view with /home/user/cooja/apps/collect-view (default: /home/user/cooja/apps), but could not find it. This does not have to be an error, as the file might be created later.
+[16:20:56 - main] [Cooja.java:3627] [WARN] - Loaded simulation may depend on not found  extension: '/home/user/cooja/apps/collect-view'
+[16:20:56 - main] [Simulation.java:422] [INFO] - Simulation random seed: 123456
+[16:20:56 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [MspMote.java:235] [INFO] - Loading firmware from: /media/sf_host/Lab7-exercise/data-collection-template-Lab7/cooja_with_gui/../app.sky
+[16:20:57 - main] [Visualizer.java:256] [INFO] - Registered external visualizer: org.contikios.cooja.plugins.skins.DGRMVisualizerSkin
+[16:20:58 - main] [TimeLine.java:567] [INFO] - Zoom level: 50000.0 microseconds/pixel 
+[16:20:59 - Thread-1] [Simulation.java:253] [INFO] - Simulation main loop started, system time: 1763047259802
+[16:21:18 - Thread-1] [Simulation.java:312] [INFO] - Simulation main loop stopped, system time: 1763047278195	Duration: 18393 ms	Simulated time 140765 ms	Ratio 7.6531832762463985
+[16:21:30 - Thread-2] [Simulation.java:253] [INFO] - Simulation main loop started, system time: 1763047290628
+[16:22:37 - Thread-2] [Simulation.java:312] [INFO] - Simulation main loop stopped, system time: 1763047357868	Duration: 67240 ms	Simulated time 1134225 ms	Ratio 16.86830755502677

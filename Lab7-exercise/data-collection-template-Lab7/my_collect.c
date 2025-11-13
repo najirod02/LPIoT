@@ -47,7 +47,6 @@ my_collect_open(struct my_collect_conn* conn, uint16_t channels,
    * 4. Set beacon_seqn (suggestion: no beacon has been received yet);
    * 5. Set the callbacks field.
    */
-
   linkaddr_copy(&(conn->parent), NULL);
   conn->callbacks = callbacks;
   conn->metric = UINT16_MAX;
@@ -110,7 +109,6 @@ beacon_timer_cb(void* ptr)
    * 3. Think who will exploit this callback (only 
    *    the sink or also common nodes?).
    */
-
   struct my_collect_conn * conn = (struct my_collect_conn *)ptr;
   
   send_beacon(conn);
@@ -119,7 +117,6 @@ beacon_timer_cb(void* ptr)
     conn->beacon_seqn++;
     ctimer_set(&(conn->beacon_timer), BEACON_INTERVAL, beacon_timer_cb, conn);
   }
-
 }
 /*---------------------------------------------------------------------------*/
 /* Beacon receive callback */
@@ -213,8 +210,21 @@ my_collect_send(struct my_collect_conn *conn)
    * 4. Send the packet to the parent using unicast and return the status
    *    of unicast_send() to the application.
    */
+  if(&(conn->parent) == NULL) return -1;
 
-  return 0; /* TO BE REMOVED WHEN TODO 5 IS IMPLEMENTED !!! */
+  /* Prepare space for the data collection header */
+  //packetbuf_clear();
+  if(packetbuf_hdralloc(sizeof(struct collect_header)) == 0) return -2;
+
+  struct collect_header header = {
+    .source = linkaddr_node_addr,
+    .hops = 0,
+  };
+
+  memcpy(packetbuf_hdrptr(), &header, sizeof(struct collect_header));
+  printf("Sent unicast to %02x:%02x with source as %02x:%02x\n", 
+    (&conn->parent)->u8[0], (&conn->parent)->u8[1], (&linkaddr_node_addr)->u8[0], (&linkaddr_node_addr)->u8[1]);
+  return unicast_send(&(conn->uc), &(conn->parent));
 }
 /*---------------------------------------------------------------------------*/
 /* Data receive callback */
@@ -242,6 +252,26 @@ uc_recv(struct unicast_conn *uc_conn, const linkaddr_t *from)
    * 3. On a forwarder, update the header and forward the packet to the parent (IF ANY) 
    *    using unicast.
    */
+  memcpy(&hdr, packetbuf_dataptr(), sizeof(struct collect_header));
+
+  if(conn->is_sink){
+    printf("Sink received a packet!\n");
+    linkaddr_t latest_source = hdr.source;
+    uint8_t latest_hop = ++hdr.hops;
+
+    // remove header from payload
+    packetbuf_hdrreduce(sizeof(struct collect_header));
+
+    // call the application recv callback to inform the application
+    // about the received data
+    conn->callbacks->recv(&latest_source, latest_hop);
+
+  } else {
+    hdr.hops++;
+    memcpy(packetbuf_dataptr(), &hdr, sizeof(struct collect_header));
+    if(&conn->parent != NULL)
+      unicast_send(&(conn->uc), &(conn->parent));
+  }
 }
 /*---------------------------------------------------------------------------*/
 
